@@ -1,0 +1,21 @@
+{
+  "name": "Koa2Manager",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon app.js"
+  },
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "fs": "^0.0.1-security",
+    "koa-bodyparser": "^4.2.1",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^3.2.0",
+    "koa-onerror": "^4.1.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "koa2": "^2.0.0-alpha.7",
+    "nodemon": "^1.18.4"
+  }
+}
