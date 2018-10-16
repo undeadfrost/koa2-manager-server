@@ -3,15 +3,23 @@ const bodyParser = require('koa-bodyparser')
 const onerror = require('koa-onerror')
 const logger = require('koa-logger')
 const json = require('koa-json')
+const jwt = require('koa-jwt')
 
 const dirImport = require('./common/dirImport')
 const config = require('./config/default')
+const errorHandle = require('./middlewares/errorHandle')
 
 const app = new Koa()
 
 // 完善页面错误提示
 onerror(app)
-
+app.use(errorHandle)
+app.use(jwt({secret: 'secret'}).unless({
+	path: [
+		/^\/admin\/login/,
+		/^\/admin\/register/,
+	]
+}))
 app.use(bodyParser())
 app.use(logger())
 app.use(json())

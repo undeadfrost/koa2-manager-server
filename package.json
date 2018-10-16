@@ -7,10 +7,13 @@
     "dev": "cross-env NODE_ENV=development nodemon app.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cross-env": "^5.2.0",
     "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.3.0",
     "koa-bodyparser": "^4.2.1",
     "koa-json": "^2.0.2",
+    "koa-jwt": "^3.5.1",
     "koa-logger": "^3.2.0",
     "koa-onerror": "^4.1.0",
     "koa-router": "^7.4.0",
