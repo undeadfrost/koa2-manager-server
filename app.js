@@ -8,12 +8,14 @@ const jwt = require('koa-jwt')
 const dirImport = require('./common/dirImport')
 const config = require('./config/default')
 const errorHandle = require('./middlewares/errorHandle')
+const verifyToken = require('./middlewares/verifyToken')
 
 const app = new Koa()
 
 // 完善页面错误提示
 onerror(app)
 app.use(errorHandle)
+app.use(verifyToken())
 app.use(jwt({secret: 'secret'}).unless({
 	path: [
 		/^\/admin\/login/,

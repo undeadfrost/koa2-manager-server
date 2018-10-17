@@ -17,14 +17,10 @@ exports.registerService = async (username, password) => {
 		await User.create({username: username, password: hashPassword})
 		const newUser = await User.findOne({where: {username}})
 		
-		// 签发Token
-		const userToken = {
-			id: newUser.id,
-			username: newUser.username
+		if (newUser) {
+			return 'success'
 		}
-		const token = jsonwebtoken.sign(userToken, 'secret', {expiresIn: '12h'})
-		
-		return token
+		return 'error'
 	}
 }
 
@@ -32,13 +28,13 @@ exports.loginService = async (username, password) => {
 	// 查询用户是否存在
 	const user = await User.findOne({where: {username: username}})
 	if (user) {
-		if (bcrypt.compareSync(username + password, user)) {
+		if (bcrypt.compareSync(username + password, user.password)) {
 			// 签发Token
-			const userToken = {
+			const payload = {
 				id: user.id,
 				username: user.username
 			}
-			const token = jsonwebtoken.sign(userToken, 'secret', {expiresIn: '12h'})
+			const token = jsonwebtoken.sign(payload, 'secret', {expiresIn: '12h'})
 			return token
 		} else {
 			return '密码错误'

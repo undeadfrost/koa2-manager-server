@@ -1,5 +1,5 @@
 const jsonwebtoken = require('jsonwebtoken')
-const {registerService} = require('../service/userService')
+const {registerService, loginService} = require('../service/userService')
 
 const register = () => {
 	return async (ctx) => {
@@ -16,19 +16,14 @@ const login = () => {
 		const data = ctx.request.body
 		let username = data['username']
 		let password = data['password']
-		let userToken = {
-			username: data.username
-		}
-		const token = jsonwebtoken.sign(userToken, 'secret', {expiresIn: '1h'})
-		ctx.body = {
-			token
-		}
+		let re = await loginService(username, password)
+		ctx.body = re
 	}
 }
 
 const getUserInfo = () => {
 	return async (ctx) => {
-		ctx.body = 'success'
+		ctx.body = ctx.request.user
 	}
 }
 
