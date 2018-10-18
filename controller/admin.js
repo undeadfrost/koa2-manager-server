@@ -22,8 +22,9 @@ const login = () => {
 }
 
 const getUserInfo = () => {
-	return async (ctx) => {
-		ctx.body = ctx.request.user
+	return async (ctx, next) => {
+		console.log(next)
+		ctx.body = ctx.state.user
 	}
 }
 

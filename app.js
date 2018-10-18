@@ -15,8 +15,7 @@ const app = new Koa()
 // 完善页面错误提示
 onerror(app)
 app.use(errorHandle)
-app.use(verifyToken())
-app.use(jwt({secret: 'secret'}).unless({
+app.use(jwt({secret: 'secret', passthrough: true}).unless({
 	path: [
 		/^\/admin\/login/,
 		/^\/admin\/register/,
