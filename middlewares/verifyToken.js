@@ -4,10 +4,23 @@ const verify = util.promisify(jsonwebtoken.verify)
 
 const verifyToken = () => {
 	return async (ctx, next) => {
-		const token = ctx.header.authorization
-		if (token) {
-			const payload = await verify(token.split(' ')[1], 'secret')
-			ctx.request.user = payload
+		const authorization = ctx.header.authorization
+		if (authorization) {
+			const oldToken = authorization.split(' ')[1]
+			await verify(oldToken, 'secret').catch(err => {
+				if (err.message === 'jwt expired') {
+					const oldPayload = jsonwebtoken.decode(oldToken)
+					let hourDifference = (new Date() - err.expiredAt) / (1000 * 60 * 60)
+					if (hourDifference < 168) {
+						const newPayload = {
+							id: oldPayload.id,
+							username: oldPayload.username
+						}
+						const nweToken = jsonwebtoken.sign(newPayload, 'secret', {expiresIn: '30s'})
+						ctx.header.authorization = 'Bearer ' + nweToken
+					}
+				}
+			})
 		}
 		await next()
 	}

@@ -1,4 +1,3 @@
-const jsonwebtoken = require('jsonwebtoken')
 const {registerService, loginService} = require('../service/userService')
 
 const register = () => {
@@ -23,8 +22,7 @@ const login = () => {
 
 const getUserInfo = () => {
 	return async (ctx, next) => {
-		console.log(next)
-		ctx.body = ctx.state.user
+		ctx.body = ctx.header
 	}
 }
 
