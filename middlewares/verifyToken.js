@@ -11,7 +11,7 @@ const verifyToken = () => {
 				if (err.message === 'jwt expired') {
 					const oldPayload = jsonwebtoken.decode(oldToken)
 					let hourDifference = (new Date() - err.expiredAt) / (1000 * 60 * 60)
-					if (hourDifference < 168) {
+					if (hourDifference < 2) {
 						const newPayload = {
 							id: oldPayload.id,
 							username: oldPayload.username

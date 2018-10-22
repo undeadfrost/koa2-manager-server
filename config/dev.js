@@ -1,6 +1,6 @@
 const config = {
 	// 项目端口
-	port: 3000,
+	port: 8000,
 	// 数据库配置
 	db: {
 		database: 'Koa2Manager',

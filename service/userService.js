@@ -37,10 +37,10 @@ exports.loginService = async (username, password) => {
 			const token = jsonwebtoken.sign(payload, 'secret', {expiresIn: '30s'})
 			return token
 		} else {
-			return '密码错误'
+			return {code: 1, msg: '密码错误'}
 		}
 	} else {
-		return '用户不存在'
+		return {code: 1, msg: '用户不存在'}
 	}
 }
 
