@@ -1,5 +1,6 @@
 const sequelize = require('../lib/mysql')
 const Sequelize = sequelize.Sequelize
+const Resource = require('./resource')
 
 const Role = sequelize.define('role', {
 	id: {
@@ -13,5 +14,8 @@ const Role = sequelize.define('role', {
 		allowNull: false
 	},
 }, {freezeTableName: true, timestamps: false})
+
+Role.belongsToMany(Resource, {through: 'role_resource', foreignKey: 'roleId', timestamps: false})
+Resource.belongsToMany(Role, {through: 'role_resource', foreignKey: 'resourceId', timestamps: false})
 
 module.exports = Role

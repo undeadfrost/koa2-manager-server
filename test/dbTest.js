@@ -1,13 +1,10 @@
-const User = require('../models/user')
-const Role = require('../models/role')
+var twoSum = function (nums, target) {
+	for (let i = 0; i < nums.length; i++) {
+		let diff = target - nums[i]
+		if (nums.includes(diff) && (i !== nums.indexOf(diff))) {
+			return [i, nums.indexOf(diff)]
+		}
+	}
+};
 
-const db = async () => {
-	let user = await User.create({
-		username: 'libo',
-		password: '123456',
-	})
-	let role = await Role.findById(1)
-	await user.addRole(role)
-}
-
-db()
+console.log(twoSum([3, 2, 4], 6))

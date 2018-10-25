@@ -1,31 +1,35 @@
-const {registerService, loginService} = require('../service/userService')
+const userService = require('../service/userService')
+const menuService = require('../service/menuService')
 
-const register = () => {
+exports.register = () => {
 	return async (ctx) => {
 		const data = ctx.request.body
 		let username = data['username']
 		let password = data['password']
-		let re = await registerService(username, password)
+		let re = await userService.register(username, password)
 		ctx.body = re
 	}
 }
 
-const login = () => {
+exports.login = () => {
 	return async (ctx) => {
 		const data = ctx.request.body
 		let username = data['username']
 		let password = data['password']
-		let re = await loginService(username, password)
+		let re = await userService.login(username, password)
 		ctx.body = re
 	}
 }
 
-const getUserInfo = () => {
+exports.getMenu = () => {
+	return async (ctx) => {
+		const user = ctx.state.user
+		ctx.body = await menuService.getMenu(user.username)
+	}
+}
+
+exports.getUserInfo = () => {
 	return async (ctx, next) => {
 		ctx.body = ctx.header
 	}
-}
-
-module.exports = {
-	login, getUserInfo, register
 }
