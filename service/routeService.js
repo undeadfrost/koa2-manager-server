@@ -16,4 +16,15 @@ const getMenu = async (username) => {
 	return menu
 }
 
-module.exports = {getMenu}
+const getAuth = async (username, route) => {
+	const user = await User.findOne({where: {username: username}})
+	const role = (await user.getRoles())[0]
+	const resourceList = await role.getResources({where: {route: route}})
+	if (resourceList.length > 0) {
+		return {'isAuth': true}
+	} else {
+		return {'isAuth': false}
+	}
+}
+
+module.exports = {getMenu, getAuth}

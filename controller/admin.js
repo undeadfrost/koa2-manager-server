@@ -1,5 +1,5 @@
 const userService = require('../service/userService')
-const menuService = require('../service/menuService')
+const routeService = require('../service/routeService')
 
 exports.register = () => {
 	return async (ctx) => {
@@ -24,12 +24,21 @@ exports.login = () => {
 exports.getMenu = () => {
 	return async (ctx) => {
 		const user = ctx.state.user
-		ctx.body = await menuService.getMenu(user.username)
+		ctx.body = await routeService.getMenu(user.username)
 	}
 }
 
 exports.getUserInfo = () => {
 	return async (ctx, next) => {
 		ctx.body = ctx.header
+	}
+}
+
+exports.getAuth = () => {
+	return async (ctx, next) => {
+		const data = ctx.request.body
+		const route = data['route']
+		const user = ctx.state.user
+		ctx.body = await routeService.getAuth(user.username, route)
 	}
 }
