@@ -1,5 +1,6 @@
 const userService = require('../service/userService')
 const routeService = require('../service/routeService')
+const roleService = require('../service/roleService')
 
 exports.register = () => {
 	return async (ctx) => {
@@ -40,5 +41,11 @@ exports.getAuth = () => {
 		const route = data['route']
 		const user = ctx.state.user
 		ctx.body = await routeService.getAuth(user.username, route)
+	}
+}
+
+exports.getRole = () => {
+	return async (ctx, next) => {
+		ctx.body = await roleService.getRole()
 	}
 }
