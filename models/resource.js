@@ -22,7 +22,18 @@ const Resource = sequelize.define('resource', {
 	},
 	route: {
 		type: Sequelize.STRING(100),
+		allowNull: false,
 	},
+	type: {
+		type: Sequelize.INTEGER(11),
+		allowNull: false,
+	},
+	icon: {
+		type: Sequelize.STRING(100),
+	},
+	orderNum: {
+		type: Sequelize.INTEGER(11),
+	}
 }, {freezeTableName: true, timestamps: false})
 
 module.exports = Resource

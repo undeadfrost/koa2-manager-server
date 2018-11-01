@@ -13,6 +13,13 @@ const Role = sequelize.define('role', {
 		type: Sequelize.STRING(50),
 		allowNull: false
 	},
+	remark: {
+		type: Sequelize.STRING(255),
+	},
+	createUserId: {
+		type: Sequelize.INTEGER(11),
+		allowNull: false
+	}
 }, {freezeTableName: true, timestamps: false})
 
 Role.belongsToMany(Resource, {through: 'role_resource', foreignKey: 'roleId', timestamps: false})

@@ -9,9 +9,11 @@ const getMenu = async (username) => {
 		return resource.parent === 0
 	})
 	menu.forEach(item => {
-		item.setDataValue('submenus', resourceList.filter(resource => {
-			return item.id === resource.parent
-		}))
+		if (item.type === 1) {
+			item.setDataValue('submenus', resourceList.filter(resource => {
+				return item.id === resource.parent
+			}))
+		}
 	})
 	return menu
 }
