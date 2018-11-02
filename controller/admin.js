@@ -49,7 +49,9 @@ adminController.getAuth = () => {
 adminController.getRole = () => {
 	return async (ctx, next) => {
 		const user = ctx.state.user
-		ctx.body = await roleService.getRole(user['username'])
+		let {roleName} = ctx.query
+		if (!roleName) roleName = ''
+		ctx.body = await roleService.getRole(user['username'], roleName)
 	}
 }
 

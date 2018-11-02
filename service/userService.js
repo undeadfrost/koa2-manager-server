@@ -35,7 +35,7 @@ const login = async (username, password) => {
 				username: user.username
 			}
 			const token = jsonwebtoken.sign(payload, 'secret', {expiresIn: '30s'})
-			return token
+			return {code: 0, msg: '登录成功', token: token}
 		} else {
 			return {code: 1, msg: '密码错误'}
 		}
