@@ -23,3 +23,19 @@ exports.generateSecret = (username, timstamp) => {
 	const sha1 = crypto.createHash('sha1').update(arr.join(''))
 	return sha1.digest('hex')
 }
+
+/**
+ * 判断一个不重复的数组是否包含另一个
+ * @param arr1
+ * @param arr2
+ * @return {boolean}
+ * @constructor
+ */
+exports.isContained = (arr1, arr2) => {
+	if (!(arr1 instanceof Array) || !(arr2 instanceof Array)) return false
+	if (arr1.length < arr2.length) return false
+	arr2.forEach(item => {
+		if (!arr1.includes(item)) return false
+	})
+	return true
+}

@@ -2,6 +2,7 @@ const Role = require('../models/role')
 const User = require('../models/user')
 const Resource = require('../models/resource')
 const Sequelize = require('sequelize')
+const {isContained} = require('../common/utils')
 
 const Op = Sequelize.Op
 let roleService = {}
@@ -50,7 +51,7 @@ roleService.saveRoleResource = async (username, roleId, resourceIds) => {
 	const userRole = (await user.getRoles())[0]
 	const userRoleResources = await userRole.getResources()
 	let userResourceIds = userRoleResources.map(item => (item.id))
-	if (userResourceIds.sort().toString() !== resourceIds.sort().toString()) {
+	if (!isContained(userResourceIds, resourceIds)) {
 		return {code: 1, msg: '参数有误'}
 	}
 	try {
