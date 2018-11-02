@@ -2,8 +2,13 @@ const User = require('../models/user')
 
 const getMenu = async (username) => {
 	const user = await User.findOne({where: {username: username}})
-	const role = (await user.getRoles())[0]
-	const resourceList = await role.getResources()
+	let resourceList = []
+	try {
+		const role = (await user.getRoles())[0]
+		resourceList = await role.getResources()
+	} catch (e) {
+		return []
+	}
 	const menu = resourceList.filter((resource) => {
 		delete resource.dataValues.role_resource
 		return resource.parent === 0
@@ -20,12 +25,17 @@ const getMenu = async (username) => {
 
 const getAuth = async (username, route) => {
 	const user = await User.findOne({where: {username: username}})
-	const role = (await user.getRoles())[0]
-	const resourceList = await role.getResources({where: {route: route}})
+	let resourceList = []
+	try {
+		const role = (await user.getRoles())[0]
+		resourceList = await role.getResources({where: {route: route}})
+	} catch (e) {
+		return {'isAuth': false, msg: '此账户无访问权限'}
+	}
 	if (resourceList.length > 0) {
-		return {'isAuth': true}
+		return {'isAuth': true, msg: ''}
 	} else {
-		return {'isAuth': false}
+		return {'isAuth': false, msg: '无权访问，请登录'}
 	}
 }
 

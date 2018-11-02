@@ -12,7 +12,7 @@ router.post('/login', adminController.login())
 // 角色相关
 router.get('/role', adminController.getRole())
 router.post('/role', adminController.addRole())
-// router.delete('/role', adminController.delRole())
+router.delete('/role', adminController.delRole())
 // router.put('/role', adminController.putRole())
 router.post('/role/resources', adminController.saveRoleResources())
 router.get('/role/resources', adminController.getRoleResources())

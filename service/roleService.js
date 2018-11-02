@@ -31,11 +31,27 @@ roleService.addRole = async (roleName, username) => {
 	return {code: 0, msg: '新增成功'}
 }
 
+roleService.delRole = async (username, roleIds) => {
+	const user = await User.findOne({where: {username: username}})
+	try {
+		await Role.destroy({where: {id: roleIds, createUserId: user.id}})
+	} catch (e) {
+		return {code: 1, msg: '删除失败'}
+	}
+	return {code: 0, msg: '删除成功'}
+}
+
 roleService.saveRoleResource = async (username, roleId, resourceIds) => {
-	const requestUser = await User.findOne({where: {username: username}})
+	const user = await User.findOne({where: {username: username}})
 	const role = await Role.findById(roleId)
-	if (requestUser.id !== role.createUserId) {
+	if (user.id !== role.createUserId) {
 		return {code: 1, msg: '权限校验未通过'}
+	}
+	const userRole = (await user.getRoles())[0]
+	const userRoleResources = await userRole.getResources()
+	let userResourceIds = userRoleResources.map(item => (item.id))
+	if (userResourceIds.sort().toString() !== resourceIds.sort().toString()) {
+		return {code: 1, msg: '参数有误'}
 	}
 	try {
 		const resources = await Resource.findAll({where: {id: resourceIds}})

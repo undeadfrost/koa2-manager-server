@@ -65,7 +65,11 @@ adminController.addRole = () => {
 }
 
 adminController.delRole = () => {
-
+	return async (ctx, next) => {
+		const {username} = ctx.state.user
+		const {roleIds} = ctx.query
+		ctx.body = await roleService.delRole(username, roleIds)
+	}
 }
 
 adminController.putRole = () => {
