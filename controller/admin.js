@@ -37,6 +37,13 @@ adminController.getUserInfo = () => {
 	}
 }
 
+adminController.getUserList = () => {
+	return async (ctx, next) => {
+		const {username} = ctx.state.user
+		ctx.body = await userService.getUserList(username)
+	}
+}
+
 adminController.getAuth = () => {
 	return async (ctx, next) => {
 		const data = ctx.request.body

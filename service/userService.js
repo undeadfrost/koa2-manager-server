@@ -2,7 +2,9 @@ const bcrypt = require('bcryptjs')
 const jsonwebtoken = require('jsonwebtoken')
 const User = require('../models/user')
 
-const register = async (username, password) => {
+let userService = {}
+
+userService.register = async (username, password) => {
 	// 查询用户是否存在
 	const existUser = await User.findOne({where: {username: username}})
 	
@@ -24,7 +26,7 @@ const register = async (username, password) => {
 	}
 }
 
-const login = async (username, password) => {
+userService.login = async (username, password) => {
 	// 查询用户是否存在
 	const user = await User.findOne({where: {username: username}})
 	if (user) {
@@ -44,4 +46,15 @@ const login = async (username, password) => {
 	}
 }
 
-module.exports = {register, login}
+userService.getUserList = async (username) => {
+	// 查询用户是否存在
+	const createUser = await User.findOne({where: {username: username}})
+	if (createUser) {
+		let userList = await User.findAll({where: {createUserId: createUser.createUserId}})
+		return userList
+	} else {
+		return []
+	}
+}
+
+module.exports = userService

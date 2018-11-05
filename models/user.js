@@ -17,11 +17,19 @@ const User = sequelize.define('user', {
 		type: Sequelize.STRING(255),
 		allowNull: false
 	},
+	mobile: {
+		type: Sequelize.STRING(13),
+	},
 	status: {
 		type: Sequelize.INTEGER(11),
 		defaultValue: 1
+	},
+	createUserId: {
+		type: Sequelize.INTEGER(11),
+		defaultValue: 1,
+		allowNull: false
 	}
-}, {freezeTableName: true, timestamps: false})
+}, {freezeTableName: true})
 
 User.belongsToMany(Role, {through: 'user_role', foreignKey: 'userId', timestamps: false})
 Role.belongsToMany(User, {through: 'user_role', foreignKey: 'roleId', timestamps: false})

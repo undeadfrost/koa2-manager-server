@@ -13,12 +13,13 @@ router.post('/login', adminController.login())
 router.get('/role', adminController.getRole())
 router.post('/role', adminController.addRole())
 router.delete('/role', adminController.delRole())
-// router.put('/role', adminController.putRole())
 router.post('/role/resources', adminController.saveRoleResources())
 router.get('/role/resources', adminController.getRoleResources())
 
 router.get('/menu', adminController.getMenu())
-router.get('/user', adminController.getUserInfo())
+
+// 用户相关
+router.get('/user', adminController.getUserList())
 
 router.post('/route/auth', adminController.getAuth())
 
