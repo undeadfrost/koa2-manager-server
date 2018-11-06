@@ -57,4 +57,52 @@ userService.getUserList = async (username) => {
 	}
 }
 
+userService.getUserInfo = async (username, userId) => {
+	const createUser = await User.findOne({where: {username: username}})
+	const user = await User.findById(userId)
+	if (createUser.id === user.createUserId) {
+		let userRole = (await user.getRoles())[0]
+		user.setDataValue('role', userRole)
+		delete user.dataValues.password
+		delete user.dataValues.updatedAt
+		delete user.dataValues.createUserId
+		return {code: 0, userInfo: user}
+	} else {
+		return {code: 1, msg: '无权查看'}
+	}
+}
+
+userService.addUser = async (createUser, username, password, mobile, roleId, status) => {
+	// 查询用户是否存在
+	const existUser = await User.findOne({where: {username: username}})
+	if (existUser) {
+		return {code: 1, msg: '用户名已存在'}
+	} else {
+		// 密码加密
+		const salt = bcrypt.genSaltSync(10)
+		const hashPassword = bcrypt.hashSync(username + password, salt)
+		// 新增用户
+		try {
+			const user = await User.create({
+				username: username,
+				password: hashPassword,
+				mobile: mobile,
+				status: status,
+				createUserId: createUser.id
+			})
+			console.log(user)
+		} catch (e) {
+			return {code: 1, msg: '新增失败'}
+		}
+		const role = await Role.findById(roleId)
+	}
+	try {
+		await User.create({
+			username: username
+		})
+	} catch (e) {
+		return {code: 1, msg: '新增失败'}
+	}
+}
+
 module.exports = userService

@@ -1,3 +1,4 @@
+const commonService = require('../service/commonService')
 const userService = require('../service/userService')
 const routeService = require('../service/routeService')
 const roleService = require('../service/roleService')
@@ -33,7 +34,9 @@ adminController.getMenu = () => {
 
 adminController.getUserInfo = () => {
 	return async (ctx, next) => {
-		ctx.body = ctx.header
+		const {username} = ctx.state.user
+		const {userId} = ctx.query
+		ctx.body = await userService.getUserInfo(username, userId)
 	}
 }
 
@@ -41,6 +44,18 @@ adminController.getUserList = () => {
 	return async (ctx, next) => {
 		const {username} = ctx.state.user
 		ctx.body = await userService.getUserList(username)
+	}
+}
+
+adminController.addUser = () => {
+	return async (ctx, next) => {
+		const {username} = ctx.state.user
+		let createUser = await commonService.getCreateUser(username)
+		if (createUser) {
+			userService.addUser(createUser, ...ctx.request.body)
+		} else {
+			ctx.body = {code: 1, msg: '权限错误'}
+		}
 	}
 }
 

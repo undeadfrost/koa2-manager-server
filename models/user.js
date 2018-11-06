@@ -21,8 +21,8 @@ const User = sequelize.define('user', {
 		type: Sequelize.STRING(13),
 	},
 	status: {
-		type: Sequelize.INTEGER(11),
-		defaultValue: 1
+		type: Sequelize.BOOLEAN,
+		defaultValue: 0
 	},
 	createUserId: {
 		type: Sequelize.INTEGER(11),

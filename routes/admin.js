@@ -20,6 +20,8 @@ router.get('/menu', adminController.getMenu())
 
 // 用户相关
 router.get('/user', adminController.getUserList())
+router.post('/user', adminController.addUser())
+router.get('/user/info', adminController.getUserInfo())
 
 router.post('/route/auth', adminController.getAuth())
 
