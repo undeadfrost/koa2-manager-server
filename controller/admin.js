@@ -43,7 +43,9 @@ adminController.getUserInfo = () => {
 adminController.getUserList = () => {
 	return async (ctx, next) => {
 		const {username} = ctx.state.user
-		ctx.body = await userService.getUserList(username)
+		let {searchKey} = ctx.query
+		if (!searchKey) searchKey = ''
+		ctx.body = await userService.getUserList(username, searchKey)
 	}
 }
 
@@ -52,7 +54,28 @@ adminController.addUser = () => {
 		const {username} = ctx.state.user
 		let createUser = await commonService.getCreateUser(username)
 		if (createUser) {
-			userService.addUser(createUser, ...ctx.request.body)
+			const {username, password, confirm, mobile, status, roleId} = ctx.request.body
+			if (password === confirm && roleId) {
+				ctx.body = await userService.addUser(createUser, username, password, mobile, status, roleId)
+			}
+			ctx.body = {code: 1, msg: '输入有误'}
+		} else {
+			ctx.body = {code: 1, msg: '权限错误'}
+		}
+	}
+}
+
+adminController.putUserInfo = () => {
+	return async (ctx, next) => {
+		const {username} = ctx.state.user
+		let createUser = await commonService.getCreateUser(username)
+		if (createUser) {
+			const {userId, username, password, confirm, mobile, status, roleId} = ctx.request.body
+			if (userId && username && status && roleId && password === confirm) {
+				ctx.body = await userService.putUserInfo(createUser, userId, username, password, mobile, status, roleId)
+			} else {
+				ctx.body = {code: 1, msg: '参数有误'}
+			}
 		} else {
 			ctx.body = {code: 1, msg: '权限错误'}
 		}

@@ -22,6 +22,7 @@ router.get('/menu', adminController.getMenu())
 router.get('/user', adminController.getUserList())
 router.post('/user', adminController.addUser())
 router.get('/user/info', adminController.getUserInfo())
+router.put('/user/info', adminController.putUserInfo())
 
 router.post('/route/auth', adminController.getAuth())
 

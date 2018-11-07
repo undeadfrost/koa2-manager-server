@@ -1,7 +1,10 @@
 const bcrypt = require('bcryptjs')
 const jsonwebtoken = require('jsonwebtoken')
 const User = require('../models/user')
+const Role = require('../models/role')
+const Sequelize = require('sequelize')
 
+const Op = Sequelize.Op
 let userService = {}
 
 userService.register = async (username, password) => {
@@ -46,11 +49,17 @@ userService.login = async (username, password) => {
 	}
 }
 
-userService.getUserList = async (username) => {
+userService.getUserList = async (username, searchKey) => {
 	// 查询用户是否存在
 	const createUser = await User.findOne({where: {username: username}})
 	if (createUser) {
-		let userList = await User.findAll({where: {createUserId: createUser.createUserId}})
+		let userList = await User.findAll({
+			where: {
+				createUserId: createUser.createUserId, username: {
+					[Op.like]: `%${searchKey}%`
+				}
+			}
+		})
 		return userList
 	} else {
 		return []
@@ -62,7 +71,12 @@ userService.getUserInfo = async (username, userId) => {
 	const user = await User.findById(userId)
 	if (createUser.id === user.createUserId) {
 		let userRole = (await user.getRoles())[0]
-		user.setDataValue('role', userRole)
+		if (userRole) {
+			delete userRole.dataValues.user_role
+			user.setDataValue('role', userRole)
+		} else {
+			user.setDataValue('role', null)
+		}
 		delete user.dataValues.password
 		delete user.dataValues.updatedAt
 		delete user.dataValues.createUserId
@@ -72,7 +86,7 @@ userService.getUserInfo = async (username, userId) => {
 	}
 }
 
-userService.addUser = async (createUser, username, password, mobile, roleId, status) => {
+userService.addUser = async (createUser, username, password, mobile, status, roleId) => {
 	// 查询用户是否存在
 	const existUser = await User.findOne({where: {username: username}})
 	if (existUser) {
@@ -81,27 +95,52 @@ userService.addUser = async (createUser, username, password, mobile, roleId, sta
 		// 密码加密
 		const salt = bcrypt.genSaltSync(10)
 		const hashPassword = bcrypt.hashSync(username + password, salt)
+		let user = {}
 		// 新增用户
 		try {
-			const user = await User.create({
+			user = await User.create({
 				username: username,
 				password: hashPassword,
 				mobile: mobile,
 				status: status,
 				createUserId: createUser.id
 			})
-			console.log(user)
 		} catch (e) {
 			return {code: 1, msg: '新增失败'}
 		}
-		const role = await Role.findById(roleId)
+		if (roleId) {
+			const role = await Role.findById(roleId)
+			if (role && role.createUserId === createUser.id) {
+				await user.setRoles(role)
+			} else {
+				return {code: 1, msg: '角色错误'}
+			}
+		}
+		return {code: 0, msg: '新增成功'}
 	}
-	try {
-		await User.create({
-			username: username
-		})
-	} catch (e) {
-		return {code: 1, msg: '新增失败'}
+}
+
+userService.putUserInfo = async (createUser, userId, username, password, mobile, status, roleId) => {
+	const user = await User.findById(userId)
+	if (user && createUser.id === user.createUserId) {
+		let fields = ['username', 'status']
+		if (password) {
+			const salt = bcrypt.genSaltSync(10)
+			password = bcrypt.hashSync(username + password, salt)
+			fields.push('password')
+		}
+		if (mobile) {
+			fields.push('mobile')
+		}
+		await user.update({
+			username: username,
+			password: password,
+			mobile: mobile,
+			status: status
+		}, {fields: fields})
+		return {code: 0, msg: '修改成功'}
+	} else {
+		return {code: 1, msg: '参数有误'}
 	}
 }
 
