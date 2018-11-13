@@ -120,6 +120,15 @@ userService.addUser = async (createUser, username, password, mobile, status, rol
 	}
 }
 
+userService.delUser = async (createUser, userId) => {
+	try {
+		await User.destroy({where: {id: userId, createUserId: createUser.id}})
+		return {code: 0, msg: '删除成功'}
+	} catch (e) {
+		return {code: 0, msg: '删除错误'}
+	}
+}
+
 userService.putUserInfo = async (createUser, userId, username, password, mobile, status, roleId) => {
 	const user = await User.findById(userId)
 	if (user && createUser.id === user.createUserId) {

@@ -57,8 +57,27 @@ adminController.addUser = () => {
 			const {username, password, confirm, mobile, status, roleId} = ctx.request.body
 			if (password === confirm && roleId) {
 				ctx.body = await userService.addUser(createUser, username, password, mobile, status, roleId)
+			} else {
+				ctx.body = {code: 1, msg: '输入有误'}
 			}
-			ctx.body = {code: 1, msg: '输入有误'}
+			
+		} else {
+			ctx.body = {code: 1, msg: '权限错误'}
+		}
+	}
+}
+
+adminController.delUser = () => {
+	return async (ctx, next) => {
+		const {username} = ctx.state.user
+		let createUser = await commonService.getCreateUser(username)
+		if (createUser) {
+			const {userId} = ctx.query
+			if (userId) {
+				ctx.body = await userService.delUser(createUser, userId)
+			} else {
+				ctx.body = {code: 1, msg: '参数有误'}
+			}
 		} else {
 			ctx.body = {code: 1, msg: '权限错误'}
 		}

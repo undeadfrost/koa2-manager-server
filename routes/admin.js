@@ -21,6 +21,7 @@ router.get('/menu', adminController.getMenu())
 // 用户相关
 router.get('/user', adminController.getUserList())
 router.post('/user', adminController.addUser())
+router.delete('/user', adminController.delUser())
 router.get('/user/info', adminController.getUserInfo())
 router.put('/user/info', adminController.putUserInfo())
 
