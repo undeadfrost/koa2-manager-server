@@ -1,42 +1,67 @@
-const User = require('../models/user')
+const sysUser = require('../models/SysUser')
+const sysMenu = require('../models/SysMenu')
+const {objArrayDoWeight} = require('../common/utils')
 
-const getMenu = async (username) => {
-	const user = await User.findOne({where: {username: username}})
-	let resourceList = []
+let routeService = {}
+
+routeService.getMenu = async (user) => {
+	let sysMenuList = []
 	try {
-		const role = (await user.getRoles())[0]
-		resourceList = await role.getResources()
+		let roles = await user.getSys_roles()
+		for (let i = 0; i < roles.length; i++) {
+			let menus = await roles[i].getSys_menus()
+			menus.forEach(menu => {
+				sysMenuList.push(menu)
+			})
+		}
 	} catch (e) {
+		console.log(e)
 		return []
 	}
-	const menu = resourceList.filter((resource) => {
-		delete resource.dataValues.role_resource
-		return resource.parent === 0
+	sysMenuList = objArrayDoWeight(sysMenuList)
+	let permissions = []
+	let navList = []
+	sysMenuList.forEach(sysMenu => {
+		delete sysMenu.dataValues.sys_role_menu
+		if (sysMenu.type === 2) permissions.push(sysMenu.permission)
+		delete sysMenu.dataValues.permission
+		if (sysMenu.parent === 0) navList.push(sysMenu)
 	})
-	menu.forEach(item => {
-		if (item.type === 1) {
-			item.setDataValue('submenus', resourceList.filter(resource => {
-				return item.id === resource.parent
+	navList.forEach(item => {
+		if (item.type === 0) {
+			item.setDataValue('submenus', sysMenuList.filter(sysMenu => {
+				return sysMenu.type !== 2 && item.id === sysMenu.parent
 			}))
 		}
 	})
-	return menu
+	return {navList: navList, permissions: permissions}
 }
 
-const getAuth = async (username, route) => {
-	const user = await User.findOne({where: {username: username}})
-	let resourceList = []
+routeService.getAuth = async (user, route) => {
+	let isAuth = false
 	try {
-		const role = (await user.getRoles())[0]
-		resourceList = await role.getResources({where: {route: route}})
+		let roles = await user.getSys_roles()
+		for (let i = 0; i < roles.length; i++) {
+			let menus = await roles[i].getSys_menus({where: {route: route}})
+			if (menus.length === 1) {
+				isAuth = true
+				break
+			}
+		}
 	} catch (e) {
+		console.log(e)
+		return {'isAuth': isAuth, msg: '参数有误'}
+	}
+	if (isAuth) {
+		return {'isAuth': true}
+	} else {
 		return {'isAuth': false, msg: '此账户无访问权限'}
 	}
-	if (resourceList.length > 0) {
-		return {'isAuth': true, msg: ''}
-	} else {
-		return {'isAuth': false, msg: '无权访问，请登录'}
-	}
 }
 
-module.exports = {getMenu, getAuth}
+routeService.getRoute = async (createUser, routeName) => {
+	const routeList = await Resource.findAll()
+	return routeList
+}
+
+module.exports = routeService

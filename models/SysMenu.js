@@ -1,8 +1,7 @@
 const sequelize = require('../lib/mysql')
 const Sequelize = sequelize.Sequelize
-const Role = require('./role')
 
-const Resource = sequelize.define('resource', {
+const SysMenu = sequelize.define('sys_menu', {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
@@ -22,7 +21,9 @@ const Resource = sequelize.define('resource', {
 	},
 	route: {
 		type: Sequelize.STRING(100),
-		allowNull: false,
+	},
+	permission: {
+		type: Sequelize.STRING(100),
 	},
 	type: {
 		type: Sequelize.INTEGER(11),
@@ -36,4 +37,4 @@ const Resource = sequelize.define('resource', {
 	}
 }, {freezeTableName: true, timestamps: false})
 
-module.exports = Resource
+module.exports = SysMenu

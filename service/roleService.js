@@ -1,17 +1,16 @@
-const Role = require('../models/role')
-const User = require('../models/user')
-const Resource = require('../models/resource')
+const sysRole = require('../models/SysRole')
+const sysUser = require('../models/SysUser')
+const Resource = require('../models/SysMenu')
 const Sequelize = require('sequelize')
 const {isContained} = require('../common/utils')
 
 const Op = Sequelize.Op
 let roleService = {}
 
-roleService.getRole = async (username, roleName) => {
-	const createUser = await User.findOne({where: {username: username}})
-	const roles = await Role.findAll({
+roleService.getRole = async (user, roleName) => {
+	const roles = await sysRole.findAll({
 		where: {
-			createUserId: createUser.id, roleName: {
+			roleName: {
 				[Op.like]: `%${roleName}%`
 			}
 		}
@@ -19,27 +18,22 @@ roleService.getRole = async (username, roleName) => {
 	return roles
 }
 
-roleService.addRole = async (roleName, username) => {
-	const createUser = await User.findOne({where: {username: username}})
-	if (!createUser) {
-		return {code: 1, msg: '新增失败'}
-	}
+roleService.addRole = async (user, roleName, remark) => {
 	try {
-		const role = await Role.create({roleName: roleName, createUserId: createUser.id})
+		const role = await sysRole.create({roleName: roleName, remark: remark, createUserId: user.id})
 	} catch (e) {
 		return {code: 1, msg: '新增失败'}
 	}
 	return {code: 0, msg: '新增成功'}
 }
 
-roleService.delRole = async (username, roleIds) => {
-	const user = await User.findOne({where: {username: username}})
-	try {
-		await Role.destroy({where: {id: roleIds, createUserId: user.id}})
-	} catch (e) {
+roleService.delRole = async (user, roleIds) => {
+	const del = await sysRole.destroy({where: {id: 111}})
+	if (del === 1) {
+		return {code: 0, msg: '删除成功'}
+	} else {
 		return {code: 1, msg: '删除失败'}
 	}
-	return {code: 0, msg: '删除成功'}
 }
 
 roleService.saveRoleResource = async (username, roleId, resourceIds) => {
@@ -64,19 +58,15 @@ roleService.saveRoleResource = async (username, roleId, resourceIds) => {
 }
 
 roleService.getRoleResource = async (username, roleId, type) => {
-	const requestUser = await User.findOne({where: {username: username}})
-	const role = await Role.findById(roleId)
-	if (requestUser.id !== role.createUserId) {
-		return {code: 1, msg: '权限校验未通过'}
-	}
-	let resources = []
+	const role = await sysRole.findById(roleId)
+	let sysMenuList = []
 	if (type) {
-		resources = await role.getResources({where: {type: type}})
+		sysMenuList = await role.getSys_menus({where: {type: type}})
 	} else {
-		resources = await role.getResources()
+		sysMenuList = await role.getSys_menus()
 	}
 	let response = []
-	resources.forEach(item => {
+	sysMenuList.forEach(item => {
 		response.push(item.id.toString())
 	})
 	return {code: 0, resources: response}

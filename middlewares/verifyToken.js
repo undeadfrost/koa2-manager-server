@@ -16,13 +16,13 @@ const verifyToken = () => {
 							id: oldPayload.id,
 							username: oldPayload.username
 						}
-						const nweToken = jsonwebtoken.sign(newPayload, 'secret', {expiresIn: '30s'})
+						const nweToken = jsonwebtoken.sign(newPayload, 'secret', {expiresIn: '3600s'})
 						ctx.header.authorization = 'Bearer ' + nweToken
 					}
 				}
 			})
 		}
-		await next()
+		return next()
 	}
 }
 

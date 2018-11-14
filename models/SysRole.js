@@ -1,8 +1,8 @@
 const sequelize = require('../lib/mysql')
 const Sequelize = sequelize.Sequelize
-const Resource = require('./resource')
+const sysMenu = require('./SysMenu')
 
-const Role = sequelize.define('role', {
+const SysRole = sequelize.define('sys_role', {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
@@ -18,11 +18,10 @@ const Role = sequelize.define('role', {
 	},
 	createUserId: {
 		type: Sequelize.INTEGER(11),
-		allowNull: false
 	}
 }, {freezeTableName: true, timestamps: false})
 
-Role.belongsToMany(Resource, {through: 'role_resource', foreignKey: 'roleId', timestamps: false})
-Resource.belongsToMany(Role, {through: 'role_resource', foreignKey: 'resourceId', timestamps: false})
+SysRole.belongsToMany(sysMenu, {through: 'sys_role_menu', foreignKey: 'roleId', timestamps: false})
+sysMenu.belongsToMany(SysRole, {through: 'sys_role_menu', foreignKey: 'menuId', timestamps: false})
 
-module.exports = Role
+module.exports = SysRole

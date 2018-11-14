@@ -39,3 +39,17 @@ exports.isContained = (arr1, arr2) => {
 	})
 	return true
 }
+
+/**
+ * 对象数组去重
+ * @param objArray
+ * @return {*}
+ */
+exports.objArrayDoWeight = (objArray) => {
+	let obj = {}
+	objArray = objArray.reduce((item, next) => {
+		obj[next.id] ? '' : obj[next.id] = true && item.push(next)
+		return item
+	}, [])
+	return objArray
+}

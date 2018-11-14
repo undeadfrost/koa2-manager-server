@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jsonwebtoken = require('jsonwebtoken')
-const User = require('../models/user')
-const Role = require('../models/role')
+const SysUser = require('../models/SysUser')
+const SysRole = require('../models/SysRole')
 const Sequelize = require('sequelize')
 
 const Op = Sequelize.Op
@@ -9,7 +9,7 @@ let userService = {}
 
 userService.register = async (username, password) => {
 	// 查询用户是否存在
-	const existUser = await User.findOne({where: {username: username}})
+	const existUser = await SysUser.findOne({where: {username: username}})
 	
 	if (existUser) {
 		return '用户已存在'
@@ -19,8 +19,8 @@ userService.register = async (username, password) => {
 		const hashPassword = bcrypt.hashSync(username + password, salt)
 		
 		// 创建用户
-		await User.create({username: username, password: hashPassword})
-		const newUser = await User.findOne({where: {username}})
+		await SysUser.create({username: username, password: hashPassword})
+		const newUser = await SysUser.findOne({where: {username}})
 		
 		if (newUser) {
 			return 'success'
@@ -31,7 +31,7 @@ userService.register = async (username, password) => {
 
 userService.login = async (username, password) => {
 	// 查询用户是否存在
-	const user = await User.findOne({where: {username: username}})
+	const user = await SysUser.findOne({where: {username: username}})
 	if (user) {
 		if (bcrypt.compareSync(username + password, user.password)) {
 			// 签发Token
@@ -39,7 +39,7 @@ userService.login = async (username, password) => {
 				id: user.id,
 				username: user.username
 			}
-			const token = jsonwebtoken.sign(payload, 'secret', {expiresIn: '30s'})
+			const token = jsonwebtoken.sign(payload, 'secret', {expiresIn: '3600s'})
 			return {code: 0, msg: '登录成功', token: token}
 		} else {
 			return {code: 1, msg: '密码错误'}
@@ -51,7 +51,7 @@ userService.login = async (username, password) => {
 
 userService.getUserList = async (username, searchKey) => {
 	// 查询用户是否存在
-	const createUser = await User.findOne({where: {username: username}})
+	const createUser = await SysUser.findOne({where: {username: username}})
 	if (createUser) {
 		let userList = await User.findAll({
 			where: {

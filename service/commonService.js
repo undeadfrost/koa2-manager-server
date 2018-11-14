@@ -1,9 +1,9 @@
-const User = require('../models/user')
+const SysUser = require('../models/SysUser')
 
 let commoneService = {}
 
-commoneService.getCreateUser = async (username) => {
-	const user = User.findOne({where: {username: username}})
+commoneService.getUser = async (userId) => {
+	const user = SysUser.findById(userId)
 	if (!user) {
 		return false
 	}
