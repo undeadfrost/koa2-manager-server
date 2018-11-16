@@ -27,8 +27,8 @@ roleService.addRole = async (user, roleName, remark) => {
 	return {code: 0, msg: '新增成功'}
 }
 
-roleService.delRole = async (user, roleIds) => {
-	const del = await sysRole.destroy({where: {id: 111}})
+roleService.delRole = async (roleIds) => {
+	const del = await sysRole.destroy({where: {id: roleIds}})
 	if (del === 1) {
 		return {code: 0, msg: '删除成功'}
 	} else {
@@ -57,19 +57,15 @@ roleService.saveRoleResource = async (username, roleId, resourceIds) => {
 	return {code: 0, msg: '新增成功'}
 }
 
-roleService.getRoleResource = async (username, roleId, type) => {
+roleService.getRoleInfo = async (user, roleId) => {
+	const userRoles = await user.getSys_roles()
 	const role = await sysRole.findById(roleId)
-	let sysMenuList = []
-	if (type) {
-		sysMenuList = await role.getSys_menus({where: {type: type}})
-	} else {
-		sysMenuList = await role.getSys_menus()
-	}
-	let response = []
-	sysMenuList.forEach(item => {
+	let sysMenuAll = await role.getSys_menus()
+	let sysRoleMenu = []
+    sysMenuAll.forEach(item => {
 		response.push(item.id.toString())
 	})
-	return {code: 0, resources: response}
+	return {code: 0, sysRoleMenu: sysRoleMenu, sysMenuAll: sysMenuAll}
 }
 
 
