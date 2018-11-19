@@ -28,70 +28,49 @@ adminController.getMenu = () => {
 }
 
 adminController.getUserInfo = () => {
-    return async (ctx, next) => {
-        const {username} = ctx.state.user
+    return async (ctx) => {
         const {userId} = ctx.query
-        ctx.body = await userService.getUserInfo(username, userId)
+        ctx.body = await userService.getUserInfo(userId)
     }
 }
 
 adminController.getUserList = () => {
-    return async (ctx, next) => {
-        const {username} = ctx.state.user
+    return async (ctx) => {
         let {searchKey} = ctx.query
         if (!searchKey) searchKey = ''
-        ctx.body = await userService.getUserList(username, searchKey)
+        ctx.body = await userService.getUserList(ctx.user, searchKey)
     }
 }
 
 adminController.addUser = () => {
-    return async (ctx, next) => {
-        const {username} = ctx.state.user
-        let createUser = await commonService.getCreateUser(username)
-        if (createUser) {
-            const {username, password, confirm, mobile, status, roleId} = ctx.request.body
-            if (password === confirm && roleId) {
-                ctx.body = await userService.addUser(createUser, username, password, mobile, status, roleId)
-            } else {
-                ctx.body = {code: 1, msg: '输入有误'}
-            }
-
+    return async (ctx) => {
+        const {username, password, confirm, mobile, status, roleIds} = ctx.request.body
+        if (password === confirm && roleIds.length > 0) {
+            ctx.body = await userService.addUser(ctx.user, username, password, mobile, status, roleIds)
         } else {
-            ctx.body = {code: 1, msg: '权限错误'}
+            ctx.body = {code: 1, msg: '参数有误'}
         }
     }
 }
 
 adminController.delUser = () => {
-    return async (ctx, next) => {
-        const {username} = ctx.state.user
-        let createUser = await commonService.getCreateUser(username)
-        if (createUser) {
-            const {userId} = ctx.query
-            if (userId) {
-                ctx.body = await userService.delUser(createUser, userId)
-            } else {
-                ctx.body = {code: 1, msg: '参数有误'}
-            }
+    return async (ctx) => {
+        const {userId} = ctx.query
+        if (userId) {
+            ctx.body = await userService.delUser(userId)
         } else {
-            ctx.body = {code: 1, msg: '权限错误'}
+            ctx.body = {code: 1, msg: '参数有误'}
         }
     }
 }
 
 adminController.putUserInfo = () => {
-    return async (ctx, next) => {
-        const {username} = ctx.state.user
-        let createUser = await commonService.getCreateUser(username)
-        if (createUser) {
-            const {userId, username, password, confirm, mobile, status, roleId} = ctx.request.body
-            if (userId && username && status && roleId && password === confirm) {
-                ctx.body = await userService.putUserInfo(createUser, userId, username, password, mobile, status, roleId)
-            } else {
-                ctx.body = {code: 1, msg: '参数有误'}
-            }
+    return async (ctx) => {
+        const {userId, username, password, confirm, mobile, status, roleIds} = ctx.request.body
+        if (userId && username && status && roleIds.length > 0 && password === confirm) {
+            ctx.body = await userService.putUserInfo(userId, username, password, mobile, status, roleIds)
         } else {
-            ctx.body = {code: 1, msg: '权限错误'}
+            ctx.body = {code: 1, msg: '参数有误'}
         }
     }
 }
@@ -135,11 +114,11 @@ adminController.putRole = () => {
 
 }
 
-adminController.saveRoleResources = () => {
-    return async (ctx, next) => {
-        const {roleId, resourceIds} = ctx.request.body
-        const {username} = ctx.state.user
-        ctx.body = await roleService.saveRoleResource(username, roleId, resourceIds)
+adminController.saveRoleInfo = () => {
+    return async (ctx) => {
+        let {roleId, menuIds} = ctx.request.body
+        if (!menuIds) menuIds = []
+        ctx.body = await roleService.saveRoleInfo(ctx.user, roleId, menuIds)
     }
 }
 
@@ -151,7 +130,7 @@ adminController.getRoleInfo = () => {
 }
 
 adminController.getRoute = () => {
-    return async (ctx, next) => {
+    return async (ctx) => {
         ctx.body = await routeService.getRoute()
     }
 }

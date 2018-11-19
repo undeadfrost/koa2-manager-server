@@ -14,22 +14,23 @@ router.post('/login', adminController.login())
 router.get('/role', permissionCheck('sys:role:list'), adminController.getRole())
 router.post('/role', permissionCheck('sys:role:save'), adminController.addRole())
 router.delete('/role', permissionCheck('sys:role:delete'), adminController.delRole())
-router.post('/role/resources', permissionCheck('sys:role:menu:'), adminController.saveRoleResources())
+router.post('/role/info', permissionCheck('sys:role:save'), adminController.saveRoleInfo())
 router.get('/role/info', permissionCheck('sys:role:info'), adminController.getRoleInfo())
 
 // 导航菜单
-router.get('/menu', adminController.getMenu())
+router.get('/nav', adminController.getMenu())
 
 // 用户相关
-router.get('/user', adminController.getUserList())
-router.post('/user', adminController.addUser())
-router.delete('/user', adminController.delUser())
-router.get('/user/info', adminController.getUserInfo())
-router.put('/user/info', adminController.putUserInfo())
+router.get('/user', permissionCheck('sys:user:list'), adminController.getUserList())
+router.post('/user', permissionCheck('sys:user:save'), adminController.addUser())
+router.delete('/user', permissionCheck('sys:user:delete'), adminController.delUser())
+router.get('/user/info', permissionCheck('sys:user:info'), adminController.getUserInfo())
+router.put('/user/info', permissionCheck('sys:user:update'), adminController.putUserInfo())
 
 // 菜单相关(列表)
-router.get('/route', adminController.getRoute())
+router.get('/menu', permissionCheck('sys:menu:list'), adminController.getRoute())
 
+// 路由权鉴
 router.post('/route/auth', adminController.getAuth())
 
 module.exports = router
