@@ -5,8 +5,8 @@ const config = {
 	db: {
 		database: 'Koa2Manager',
 		username: 'root',
-		password: 'root',
-		host: '192.168.99.100',
+		password: 'libo1121X',
+		host: 'localhost',
 		port: 3306,
 		dialect: 'mysql'
 	}

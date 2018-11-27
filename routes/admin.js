@@ -29,6 +29,8 @@ router.put('/user/info', permissionCheck('sys:user:update'), adminController.put
 
 // 菜单相关(列表)
 router.get('/menu', permissionCheck('sys:menu:list'), adminController.getRoute())
+router.post('/menu', permissionCheck('sys:menu:save'), adminController.addRoute())
+router.delete('/menu', permissionCheck('sys:menu:delete'), adminController.delRoute())
 
 // 路由权鉴
 router.post('/route/auth', adminController.getAuth())
