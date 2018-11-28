@@ -66,11 +66,14 @@ routeService.getRoute = async (createUser, routeName) => {
 	return menuList
 }
 
-routeService.addRoute = async (parent, routeName, orderNum, type) => {
+routeService.addRoute = async (parent, routeName, menuRoute, menuPermission, icon, orderNum, type) => {
 	try {
 		await SysMenu.create({
 			parent: parent,
 			name: routeName,
+			route: menuRoute,
+			permission: menuPermission,
+			icon: icon,
 			orderNum: orderNum,
 			type: type
 		})

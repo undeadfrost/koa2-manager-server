@@ -137,8 +137,22 @@ adminController.getRoute = () => {
 
 adminController.addRoute = () => {
 	return async (ctx) => {
-		const {parent, routeName, orderNum, type} = ctx.request.body
-		ctx.body = await routeService.addRoute(parent, routeName, orderNum, type)
+		const {parent, routeName, menuRoute, menuPermission, icon, orderNum, type} = ctx.request.body
+		if (type && type === "0") {
+			if (routeName && orderNum) {
+				ctx.body = await routeService.addRoute(0, routeName, menuRoute, menuPermission, icon, orderNum, type)
+			} else {
+				ctx.body = {code: 1, msg: '参数有误！'}
+			}
+		} else if (type && type === "1") {
+			if (parent && routeName && menuRoute && orderNum) {
+				ctx.body = await routeService.addRoute(parent, routeName, menuRoute, menuPermission, icon, orderNum, type)
+			} else {
+				ctx.body = {code: 1, msg: '参数有误！'}
+			}
+		} else {
+			ctx.body = {code: 1, msg: '参数有误！'}
+		}
 	}
 }
 
