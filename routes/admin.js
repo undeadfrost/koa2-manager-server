@@ -31,6 +31,8 @@ router.put('/user/info', permissionCheck('sys:user:update'), adminController.put
 router.get('/menu', permissionCheck('sys:menu:list'), adminController.getRoute())
 router.post('/menu', permissionCheck('sys:menu:save'), adminController.addRoute())
 router.delete('/menu', permissionCheck('sys:menu:delete'), adminController.delRoute())
+router.get('/menu/info', permissionCheck('sys:menu:info'), adminController.getRouteInfo())
+router.put('/menu/info', permissionCheck('sys:menu:update'), adminController.putRouteInfo())
 
 // 路由权鉴
 router.post('/route/auth', adminController.getAuth())

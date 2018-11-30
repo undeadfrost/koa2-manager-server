@@ -163,4 +163,25 @@ adminController.delRoute = () => {
 	}
 }
 
+adminController.getRouteInfo = () => {
+	return async (ctx) => {
+		const {menuId} = ctx.query
+		ctx.body = await routeService.getRouteInfo(menuId)
+	}
+}
+
+adminController.putRouteInfo = () => {
+	return async (ctx) => {
+		let {menuId, menuRoute, menuPermission, routeName, icon, orderNum, parentMenu, type} = ctx.request.body
+		type = parseInt(type)
+		if (type === 0 && menuId && routeName && icon && orderNum) {
+			ctx.body = await routeService.putRouteInfo(menuId, menuRoute, menuPermission, routeName, icon, orderNum, parentMenu, type)
+		} else if (type === 1 && menuId && routeName && menuRoute && parentMenu && orderNum) {
+			ctx.body = await routeService.putRouteInfo(menuId, menuRoute, menuPermission, routeName, icon, orderNum, parentMenu, type)
+		} else {
+			ctx.body = {code: 1, msg: '参数有误！'}
+		}
+	}
+}
+
 module.exports = adminController

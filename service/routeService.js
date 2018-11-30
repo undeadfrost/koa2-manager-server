@@ -62,7 +62,7 @@ routeService.getAuth = async (user, route) => {
 }
 
 routeService.getRoute = async (createUser, routeName) => {
-	const menuList = await SysMenu.findAll()
+	const menuList = await SysMenu.findAll({order: ['orderNum']})
 	return menuList
 }
 
@@ -95,4 +95,33 @@ routeService.delRoute = async (menuId) => {
 		return {code: 1, msg: '删除失败！'}
 	}
 }
+
+routeService.getRouteInfo = async (menuId) => {
+	const menu = await SysMenu.findById(menuId)
+	return {code: 0, menu: menu}
+}
+
+routeService.putRouteInfo = async (meunId, menuRoute, menuPermission, routeName, icon, orderNum, parentMenu, type) => {
+	const menuInfo = await SysMenu.findById(meunId)
+	let fields = ['name', 'icon', 'orderNum', 'type']
+	if (type === 1) {
+		fields.concat(['parent', 'route', 'permissions'])
+	}
+	try {
+		await menuInfo.update({
+			name: routeName,
+			parent: parentMenu,
+			route: menuRoute,
+			permissions: menuPermission,
+			icon: icon,
+			orderNum: orderNum,
+			type: type
+		}, {fields: fields})
+		return {code: 0, msg: '更新成功！'}
+	} catch (e) {
+		return {code: 1, msg: '更新失败！'}
+	}
+	
+}
+
 module.exports = routeService
