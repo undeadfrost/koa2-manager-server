@@ -34,6 +34,9 @@ router.delete('/menu', permissionCheck('sys:menu:delete'), adminController.delRo
 router.get('/menu/info', permissionCheck('sys:menu:info'), adminController.getRouteInfo())
 router.put('/menu/info', permissionCheck('sys:menu:update'), adminController.putRouteInfo())
 
+// 个人信息
+// router.get('/account', adminController.getAccount())
+
 // 路由权鉴
 router.post('/route/auth', adminController.getAuth())
 
