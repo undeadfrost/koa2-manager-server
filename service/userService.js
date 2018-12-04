@@ -16,7 +16,7 @@ userService.register = async (username, password) => {
 	} else {
 		// 密码加密
 		const salt = bcrypt.genSaltSync(10)
-		const hashPassword = bcrypt.hashSync(username + password, salt)
+		const hashPassword = bcrypt.hashSync(password, salt)
 		
 		// 创建用户
 		await SysUser.create({username: username, password: hashPassword})
@@ -33,7 +33,7 @@ userService.login = async (username, password) => {
 	// 查询用户是否存在
 	const user = await SysUser.findOne({where: {username: username}})
 	if (user && user.status) {
-		if (bcrypt.compareSync(username + password, user.password)) {
+		if (bcrypt.compareSync(password, user.password)) {
 			// 签发Token
 			const payload = {
 				id: user.id,
@@ -88,7 +88,7 @@ userService.addUser = async (createUser, username, password, mobile, status, rol
 	} else {
 		// 密码加密
 		const salt = bcrypt.genSaltSync(10)
-		const hashPassword = bcrypt.hashSync(username + password, salt)
+		const hashPassword = bcrypt.hashSync(password, salt)
 		let user = {}
 		// 新增用户
 		try {
@@ -124,7 +124,7 @@ userService.putUserInfo = async (userId, username, password, mobile, status, rol
 	let fields = ['username', 'status']
 	if (password) {
 		const salt = bcrypt.genSaltSync(10)
-		password = bcrypt.hashSync(username + password, salt)
+		password = bcrypt.hashSync(password, salt)
 		fields.push('password')
 	}
 	if (mobile) {
