@@ -41,6 +41,7 @@ userService.login = async (username, password) => {
 			}
 			const token = jsonwebtoken.sign(payload, 'secret', {expiresIn: '3600s'})
 			const userInfo = {
+				userId: user.id,
 				username: user.username,
 				mobile: user.mobile,
 				createdAt: user.createdAt,

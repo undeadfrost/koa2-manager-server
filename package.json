@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon app.js"
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "prd": "cross-env NODE_ENV=production pm2 start app.js --name=Koa2Manager"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
