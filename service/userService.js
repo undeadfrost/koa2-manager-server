@@ -146,4 +146,26 @@ userService.putUserInfo = async (userId, username, password, mobile, status, rol
 	}
 }
 
+userService.putMyBasic = async (user, userBasic) => {
+	try {
+		await user.update({
+			...userBasic
+		})
+		return {code: 0, msg: '更新成功'}
+	} catch (e) {
+		return {code: 1, msg: '更新失败'}
+	}
+}
+
+userService.putMySecurity = async (user, password) => {
+	try {
+		await user.update({
+			password: password
+		})
+		return {code: 0, msg: '修改成功'}
+	} catch (e) {
+		return {code: 0, msg: '修改失败'}
+	}
+}
+
 module.exports = userService

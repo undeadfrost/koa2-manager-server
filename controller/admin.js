@@ -184,4 +184,22 @@ adminController.putRouteInfo = () => {
 	}
 }
 
+adminController.putMyBasic = () => {
+	return async (ctx) => {
+		let {mobile} = ctx.request.body
+		ctx.body = await userService.putMyBasic(ctx.user, {mobile: mobile})
+	}
+}
+
+adminController.putMySecurity = () => {
+	return async (ctx) => {
+		let {password, confirm} = ctx.request.body
+		if (password === confirm) {
+			ctx.body = await userService.putMySecurity(ctx.user, password)
+		} else {
+			ctx.body = {code: 1, msg: '参数有误'}
+		}
+	}
+}
+
 module.exports = adminController

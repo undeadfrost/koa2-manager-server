@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const adminController = require('../controller/admin')
 const permissionCheck = require('../middlewares/permissionCheck')
+const requestUser = require('../middlewares/requestUser')
 
 router.prefix('/admin')
 
@@ -34,6 +35,9 @@ router.delete('/menu', permissionCheck('sys:menu:delete'), adminController.delRo
 router.get('/menu/info', permissionCheck('sys:menu:info'), adminController.getRouteInfo())
 router.put('/menu/info', permissionCheck('sys:menu:update'), adminController.putRouteInfo())
 
+// 个人信息修改
+router.put('/my/basic', requestUser(), adminController.putMyBasic())
+router.put('/my/security', requestUser(), adminController.putMySecurity())
 // 路由权鉴
 router.post('/route/auth', adminController.getAuth())
 
