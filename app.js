@@ -5,6 +5,7 @@ const logger = require('koa-logger')
 const json = require('koa-json')
 const jwt = require('koa-jwt')
 const cors = require('koa2-cors')
+const koaBody = require('koa-body')
 
 const dirImport = require('./common/dirImport')
 const config = require('./config/default')
@@ -24,7 +25,12 @@ app.use(jwt({secret: 'secret', passthrough: false}).unless({
 		/^\/admin\/register/,
 	]
 }))
-app.use(bodyParser())
+app.use(koaBody({
+	multipart: true,
+	formidable: {
+		maxFileSize: 300 * 1024 * 1024    // 设置上传文件大小最大限制，默认3M
+	}
+}))
 app.use(logger())
 app.use(json())
 app.use(require('koa-static')(__dirname + '/static'))

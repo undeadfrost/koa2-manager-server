@@ -37,6 +37,7 @@ router.put('/menu/info', permissionCheck('sys:menu:update'), adminController.put
 
 // 个人信息修改
 router.put('/my/basic', requestUser(), adminController.putMyBasic())
+router.post('/my/upload/head', requestUser(), adminController.uploadHead())
 router.put('/my/security', requestUser(), adminController.putMySecurity())
 // 路由权鉴
 router.post('/route/auth', adminController.getAuth())

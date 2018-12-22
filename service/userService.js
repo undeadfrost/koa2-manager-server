@@ -1,4 +1,6 @@
 const bcrypt = require('bcryptjs')
+const fs = require('fs')
+const path = require('path')
 const jsonwebtoken = require('jsonwebtoken')
 const SysUser = require('../models/SysUser')
 const SysRole = require('../models/SysRole')
@@ -158,6 +160,10 @@ userService.putMyBasic = async (user, userBasic) => {
 }
 
 userService.putMySecurity = async (user, password) => {
+	if (password) {
+		const salt = bcrypt.genSaltSync(10)
+		password = bcrypt.hashSync(password, salt)
+	}
 	try {
 		await user.update({
 			password: password
@@ -165,6 +171,26 @@ userService.putMySecurity = async (user, password) => {
 		return {code: 0, msg: '修改成功'}
 	} catch (e) {
 		return {code: 0, msg: '修改失败'}
+	}
+}
+
+userService.uploadHead = async (user, file) => {
+	// 创建可读流
+	try {
+		const readStream = fs.createReadStream(file.path);
+		const fileFormat = file.name.split('.')
+		const fileName = user.username + Date.now() + '.' + fileFormat[fileFormat.length - 1]
+		let filePath = path.join(__dirname, `../public/uploads/${fileName}`);
+		// 创建可写流
+		const writeStream = fs.createWriteStream(filePath);
+		// 可读流通过管道写入可写流
+		readStream.pipe(writeStream);
+		await user.update({
+			portrait: `/public/uploads/${user.username}/${fileName}`
+		})
+		return {code: 0, msg: '上传成功'}
+	} catch (e) {
+		return {code: 1, msg: '上传失败'}
 	}
 }
 

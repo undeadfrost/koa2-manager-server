@@ -194,11 +194,19 @@ adminController.putMyBasic = () => {
 adminController.putMySecurity = () => {
 	return async (ctx) => {
 		let {password, confirm} = ctx.request.body
-		if (password === confirm) {
+		if (password === confirm && password.length >= 6) {
 			ctx.body = await userService.putMySecurity(ctx.user, password)
 		} else {
 			ctx.body = {code: 1, msg: '参数有误'}
 		}
+	}
+}
+
+adminController.uploadHead = () => {
+	return async (ctx) => {
+		// 上传单个文件
+		const file = ctx.request.files.file
+		ctx.body = await userService.uploadHead(ctx.user, file)
 	}
 }
 
