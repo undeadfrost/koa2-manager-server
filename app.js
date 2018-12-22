@@ -1,5 +1,4 @@
 const Koa = require('koa2')
-const bodyParser = require('koa-bodyparser')
 const onerror = require('koa-onerror')
 const logger = require('koa-logger')
 const json = require('koa-json')
@@ -17,12 +16,14 @@ const app = new Koa()
 // 完善页面错误提示
 onerror(app)
 app.use(cors())
+app.use(require('koa-static')(__dirname + '/public'))
 app.use(errorHandle)
 app.use(verifyToken())
 app.use(jwt({secret: 'secret', passthrough: false}).unless({
 	path: [
 		/^\/admin\/login/,
 		/^\/admin\/register/,
+		/^((?!\/admin).)*$/ //设置需要认证的接口地址，其余接口不需要认证
 	]
 }))
 app.use(koaBody({
@@ -33,7 +34,6 @@ app.use(koaBody({
 }))
 app.use(logger())
 app.use(json())
-app.use(require('koa-static')(__dirname + '/static'))
 
 // 自动加载routers下路由文件
 dirImport.routes(app, __dirname + '/routes/')

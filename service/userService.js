@@ -46,6 +46,7 @@ userService.login = async (username, password) => {
 				userId: user.id,
 				username: user.username,
 				mobile: user.mobile,
+				portrait: user.portrait,
 				createdAt: user.createdAt,
 				updatedAt: user.updatedAt
 			}
@@ -150,10 +151,18 @@ userService.putUserInfo = async (userId, username, password, mobile, status, rol
 
 userService.putMyBasic = async (user, userBasic) => {
 	try {
-		await user.update({
+		user = await user.update({
 			...userBasic
 		})
-		return {code: 0, msg: '更新成功'}
+		const userInfo = {
+			userId: user.id,
+			username: user.username,
+			mobile: user.mobile,
+			portrait: user.portrait,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt
+		}
+		return {code: 0, msg: '更新成功', userInfo: userInfo}
 	} catch (e) {
 		return {code: 1, msg: '更新失败'}
 	}
@@ -185,10 +194,18 @@ userService.uploadHead = async (user, file) => {
 		const writeStream = fs.createWriteStream(filePath);
 		// 可读流通过管道写入可写流
 		readStream.pipe(writeStream);
-		await user.update({
-			portrait: `/public/uploads/${user.username}/${fileName}`
+		user = await user.update({
+			portrait: `/uploads/${fileName}`
 		})
-		return {code: 0, msg: '上传成功'}
+		const userInfo = {
+			userId: user.id,
+			username: user.username,
+			mobile: user.mobile,
+			portrait: user.portrait,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt
+		}
+		return {code: 0, msg: '上传成功', userInfo: userInfo}
 	} catch (e) {
 		return {code: 1, msg: '上传失败'}
 	}
