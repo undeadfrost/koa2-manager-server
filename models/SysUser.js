@@ -26,7 +26,7 @@ const SysUser = sequelize.define('sys_user', {
 	},
 	portrait: {
 		type: Sequelize.STRING(255),
-		defaultValue: '/public/uploads/portrait_default.png'
+		defaultValue: '/uploads/portrait_default.png'
 	},
 	createUserId: {
 		type: Sequelize.INTEGER(11),
