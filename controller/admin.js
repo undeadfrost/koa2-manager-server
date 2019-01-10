@@ -56,10 +56,10 @@ adminController.addUser = () => {
 adminController.delUser = () => {
 	return async (ctx) => {
 		const {userId} = ctx.query
-		if (userId) {
+		if (userId && parseInt(userId) !== ctx.user.id) {
 			ctx.body = await userService.delUser(userId)
 		} else {
-			ctx.body = {code: 1, msg: '参数有误'}
+			ctx.body = {code: 1, msg: '删除有误'}
 		}
 	}
 }
@@ -106,6 +106,12 @@ adminController.addRole = () => {
 adminController.delRole = () => {
 	return async (ctx) => {
 		const {roleIds} = ctx.query
+		const roles = await ctx.user.getSys_roles()
+		for (let role of roles) {
+			if (role.id === parseInt(roleIds)) {
+				return ctx.body = {code: 1, msg: '无法删除与自己关联的角色'}
+			}
+		}
 		ctx.body = await roleService.delRole(roleIds)
 	}
 }
