@@ -105,14 +105,14 @@ routeService.putRouteInfo = async (meunId, menuRoute, menuPermission, routeName,
 	const menuInfo = await SysMenu.findById(meunId)
 	let fields = ['name', 'icon', 'orderNum', 'type']
 	if (type === 1) {
-		fields = fields.concat(['parent', 'route', 'permissions'])
+		fields = fields.concat(['parent', 'route', 'permission'])
 	}
 	try {
 		await menuInfo.update({
 			name: routeName,
 			parent: parentMenu,
 			route: menuRoute,
-			permissions: menuPermission,
+			permission: menuPermission,
 			icon: icon,
 			orderNum: orderNum,
 			type: type
