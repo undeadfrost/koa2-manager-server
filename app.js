@@ -17,8 +17,8 @@ const app = new Koa()
 onerror(app)
 app.use(cors())
 app.use(require('koa-static')(__dirname + '/public'))
-app.use(errorHandle)
 app.use(verifyToken())
+app.use(errorHandle)
 app.use(jwt({secret: 'secret', passthrough: false}).unless({
 	path: [
 		/^\/admin\/login/,

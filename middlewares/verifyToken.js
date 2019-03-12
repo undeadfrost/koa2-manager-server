@@ -18,6 +18,7 @@ const verifyToken = () => {
 						}
 						const nweToken = jsonwebtoken.sign(newPayload, 'secret', {expiresIn: '3600s'})
 						ctx.header.authorization = 'Bearer ' + nweToken
+						ctx.set('Authorization', `Bearer ${nweToken}`)
 					}
 				}
 			})
