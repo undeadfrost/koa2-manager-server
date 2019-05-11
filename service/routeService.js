@@ -97,12 +97,12 @@ routeService.delRoute = async (menuId) => {
 }
 
 routeService.getRouteInfo = async (menuId) => {
-	const menu = await SysMenu.findById(menuId)
+	const menu = await SysMenu.findByPk(menuId)
 	return {code: 0, menu: menu}
 }
 
 routeService.putRouteInfo = async (meunId, menuRoute, menuPermission, routeName, icon, orderNum, parentMenu, type) => {
-	const menuInfo = await SysMenu.findById(meunId)
+	const menuInfo = await SysMenu.findByPk(meunId)
 	let fields = ['name', 'icon', 'orderNum', 'type']
 	if (type === 1) {
 		fields = fields.concat(['parent', 'route', 'permission'])

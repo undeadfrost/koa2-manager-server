@@ -3,7 +3,7 @@ const sysUser = require('../models/SysUser')
 const requestUser = () => {
 	return async (ctx, next) => {
 		const {id} = ctx.state.user
-		const user = await sysUser.findById(id)
+		const user = await sysUser.findByPk(id)
 		if (!user) {
 			return ctx.body = {code: 1, msg: '无权操作'}
 		}

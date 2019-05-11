@@ -6,7 +6,7 @@ const Op = Sequelize.Op
 const permissionChenk = (permission) => {
     return async (ctx, next) => {
         const {id} = ctx.state.user
-        const user = await sysUser.findById(id)
+        const user = await sysUser.findByPk(id)
         ctx.user = user
         if (!user) {
             return ctx.body = {code: 1, msg: '无权操作'}

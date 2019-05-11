@@ -71,7 +71,7 @@ userService.getUserList = async (user, searchKey) => {
 }
 
 userService.getUserInfo = async (userId) => {
-	const user = await SysUser.findById(userId)
+	const user = await SysUser.findByPk(userId)
 	let userRoles = await user.getSys_roles()
 	if (userRoles.length > 0) {
 		user.setDataValue('roles', userRoles)
@@ -124,7 +124,7 @@ userService.delUser = async (userId) => {
 }
 
 userService.putUserInfo = async (userId, username, password, mobile, status, roleIds) => {
-	const user = await SysUser.findById(userId)
+	const user = await SysUser.findByPk(userId)
 	let fields = ['username', 'status']
 	if (password) {
 		const salt = bcrypt.genSaltSync(10)

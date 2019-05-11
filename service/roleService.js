@@ -37,7 +37,7 @@ roleService.delRole = async (roleIds) => {
 }
 
 roleService.saveRoleInfo = async (user, roleId, menuIds) => {
-    const role = await SysRole.findById(roleId)
+    const role = await SysRole.findByPk(roleId)
     const userRoles = await user.getSys_roles()
     let userMenuAll = []
     for (let i = 0; i < userRoles.length; i++) {
@@ -63,7 +63,7 @@ roleService.getRoleInfo = async (user, roleId) => {
         userMenuAll = userMenuAll.concat(await userRoles[i].getSys_menus({order: ['orderNum']}))
     }
     userMenuAll = objArrayDoWeight(userMenuAll)
-    const role = await SysRole.findById(roleId)
+    const role = await SysRole.findByPk(roleId)
     let roleMenu = []
     let temp = await role.getSys_menus({where: {type: 1}})
     temp.forEach(item => {
