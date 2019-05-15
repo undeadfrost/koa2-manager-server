@@ -23,7 +23,7 @@ const SysMenu = sequelize.define('sys_menu', {
 		type: Sequelize.STRING(100),
 	},
 	permission: {
-		type: Sequelize.STRING(100),
+		type: Sequelize.STRING(255),
 	},
 	type: {
 		type: Sequelize.INTEGER(11),
